@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Crowdmap Simple Post</title>
+	<link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	<script src="/assets/js/dug.js"></script>
+
+	<style type="text/css">
+	html, body {
+		width:100%;
+		height:100%;
+	}
+	.fuzz-holder {
+		background-image: url('/assets/img/fuzzy.png');
+		min-width:100%;
+		min-height:100%;
+	}
+	.media a {
+		max-width:115px;
+	}
+	.media .avatar {
+		max-width:100%;
+	}
+	</style>
+
+	<script>
+		function param(name) {
+			name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+			var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+				results = regex.exec(location.search);
+			return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+		}
+		var postId = parseInt(param('postid'),10);
+		if(isNaN(parseFloat(postId))) {
+			// If we didn't set a postId, just ignore it and pull the latest.
+			postId = '';
+		}
+	</script>
+
+</head>
+<body>
+
+<div class="fuzz-holder">
+
+	<div class="container">
+
+		<div class="page-header" id="banner">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1>Crowdmap Simple Post</h1>
+					<p class="lead">A simple example</p>
+				</div>
+			</div>
+		</div>
+
+		<script>
+		dug({
+			endpoint: 'https://api.crowdmap.com/v1/posts/'+postId+'?limit=1',
+			template: '{{#posts}}\
+				<div class="panel panel-default">\
+					<div class="panel-body">\
+						{{#media}}\
+							<img src="{{file_location}}{{filename_l}}?dew=32" width="{{l_width}}" height="{{l_height}}" class="img-responsive img-rounded" id="post-image">\
+						{{/media}}\
+						<div class="media">\
+							<a class="pull-left" href="https://crowdmap.com{{owner.url}}">\
+								<img class="img-rounded avatar" src="{{owner.avatar}}" alt="{{owner.name}}">\
+							</a>\
+							<div class="media-body">\
+								<h4 class="media-heading"><a href="https://crowdmap.com/post/{{post_id}}/">A post by {{owner.name}}</a></h4>\
+								{{message}}\
+							</div>\
+						</div>\
+					</div>\
+				</div>\
+			{{/posts}}',
+			afterRender: function() {
+				var img = document.getElementById("post-image").src;
+				document.body.style.background = 'url("'+img+'")  no-repeat center center fixed';
+				document.body.style.backgroundSize = 'cover';
+			}
+		});
+		</script>
+
+	</div>
+
+</div>
+
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/bootstrap.min.js"></script>
+
+</body>
+</html>
